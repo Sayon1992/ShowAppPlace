@@ -30,6 +30,7 @@ const ImgPicker: React.FC<Props> = (props) => {
       );
       return false;
     }
+
     return true;
   };
 
