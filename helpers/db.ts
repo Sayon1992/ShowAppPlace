@@ -3,14 +3,6 @@ import { WebSQLDatabase } from "expo-sqlite";
 
 const db: WebSQLDatabase = SQLite.openDatabase("places.db");
 
-interface insertPlaceI {
-  title: string;
-  image: string;
-  address: string;
-  lat: number;
-  long: number;
-}
-
 export const init = () => {
   const promise = new Promise((res: any, rej: any) => {
     db.transaction((tx) => {
@@ -36,12 +28,49 @@ export const insertPlace = (
   lat: number,
   long: number
 ) => {
-  console.log(title);
   const promise = new Promise((res: any, rej: any) => {
     db.transaction((tx) => {
       tx.executeSql(
         `INSERT INTO places (title, image, address, lat, lng) VALUES (?,?,?,?,?)`,
         [title, image, address, lat, long],
+        (_, result) => {
+          console.log("entro");
+
+          return res(result);
+        },
+        (_, e) => {
+          return rej(e);
+        }
+      );
+    });
+  });
+  return promise;
+};
+
+export const fetchPlaces = () => {
+  const promise = new Promise((res: any, rej: any) => {
+    db.transaction((tx) => {
+      tx.executeSql(
+        `SELECT * FROM places`,
+        [],
+        (_, result) => {
+          return res(result);
+        },
+        (_, e) => {
+          return rej(e);
+        }
+      );
+    });
+  });
+  return promise;
+};
+
+export const deleteAllPlaces = () => {
+  const promise = new Promise((res: any, rej: any) => {
+    db.transaction((tx) => {
+      tx.executeSql(
+        `DELETE FROM places`,
+        [],
         (_, result) => {
           return res(result);
         },

@@ -1,15 +1,23 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { View, Text, StyleSheet, FlatList } from "react-native";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../App";
 import Place from "../models/place";
 import PlaceItem from "../components/PlaceItem";
 import { ListScreenProps } from "../types/rootStack";
+import * as placesActions from "../store/places-actions";
+import { deleteAllPlaces } from "../helpers/db";
 
 const PlacesListScreen: React.FC<ListScreenProps> = ({ navigation }) => {
   const storePlaces = useSelector<RootState, Place[]>(
     (state) => state.places.places
   );
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(placesActions.fetchPlace([]));
+  }, [dispatch]);
+
   return (
     <FlatList
       data={storePlaces}

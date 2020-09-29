@@ -1,32 +1,53 @@
 import { call, takeLatest, put } from "redux-saga/effects";
-import { ADD_PLACE } from "./placesActionTypes";
-import { addPlace } from "./places-actions";
 import * as FileSystem from "expo-file-system";
-import { insertPlace } from "../helpers/db";
+import { fetchPlaces, insertPlace } from "../helpers/db";
+import { AddPlaceI, SET_PLACES_SUCCESS } from "./placesActionTypes";
 
 export function* addPlaceWatcher() {
-  yield takeLatest("ADD_PLACE_REQUEST", addPlaceFlow);
+  yield takeLatest("ADD_PLACE", addPlaceFlow);
 }
 
-function* addPlaceFlow(action: any) {
+export function* fetchPlaceWatcher() {
+  yield takeLatest("SET_PLACES", fetchPlaceFlow);
+}
+
+function* addPlaceFlow(action: AddPlaceI) {
   try {
-    console.log(action);
-    const fileName = action.placeData.selectedImage.split("/").pop();
-    const newPath = yield FileSystem.documentDirectory + fileName;
+    const fileName: string = <string>(
+      action.placeData.selectedImage.split("/").pop()
+    );
+    const newPath: string = yield FileSystem.documentDirectory + fileName;
     yield FileSystem.moveAsync({
       from: action.placeData.selectedImage,
       to: newPath,
     });
-    const dbResult: unknown = yield insertPlace(
+
+    const dbResult: any = yield call(
+      insertPlace,
       action.placeData.title,
       newPath,
       "address",
       15.6,
       12.3
     );
-    console.log(dbResult);
-    const payload = { title: action.placeData.title, image: newPath };
-    yield put(addPlace(payload.title, payload.image));
+
+    yield put({
+      type: "ADD_PLACE_SUCCESS",
+      placeData: {
+        id: dbResult.insertId.toString(),
+        title: action.placeData.title,
+        selectedImage: newPath,
+      },
+    });
+  } catch (e) {
+    console.error(e.message);
+  }
+}
+
+function* fetchPlaceFlow() {
+  try {
+    const dbResult: any = yield call(fetchPlaces);
+    yield put({ type: SET_PLACES_SUCCESS, places: dbResult.rows._array });
   } catch (e) {
     console.error(e.message);
   }

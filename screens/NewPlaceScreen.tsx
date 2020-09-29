@@ -11,7 +11,7 @@ import { useDispatch } from "react-redux";
 import Colors from "../constants/Colors";
 import * as placesActions from "../store/places-actions";
 import ImgPicker from "../components/ImgPicker";
-import { select } from "redux-saga/effects";
+import LocationPicker from "../components/LocationPicker";
 
 const NewPlaceScreen: React.FC = (props: any) => {
   const [title, setTitle] = useState<string>("");
@@ -20,7 +20,7 @@ const NewPlaceScreen: React.FC = (props: any) => {
   const dispatch = useDispatch();
 
   const savePlaceHandler = () => {
-    dispatch(placesActions.addPlace(title, selectedImage));
+    dispatch(placesActions.addPlace("", title, selectedImage));
     props.navigation.goBack();
   };
 
@@ -40,6 +40,7 @@ const NewPlaceScreen: React.FC = (props: any) => {
           style={styles.textInput}
         />
         <ImgPicker onImageTaken={imageTakenHandler} />
+        <LocationPicker />
         <Button
           title="Save Place"
           onPress={savePlaceHandler}

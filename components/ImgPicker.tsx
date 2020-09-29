@@ -4,14 +4,6 @@ import Colors from "../constants/Colors";
 import * as ImagePicker from "expo-image-picker";
 import * as Permissions from "expo-permissions";
 
-interface camera {
-  cancelled: boolean;
-  height: number;
-  type: string;
-  uri: string;
-  width: number;
-}
-
 interface Props {
   onImageTaken: (a: string) => void;
 }
