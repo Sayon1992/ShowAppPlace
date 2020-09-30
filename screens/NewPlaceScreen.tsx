@@ -40,7 +40,7 @@ const NewPlaceScreen: React.FC = (props: any) => {
           style={styles.textInput}
         />
         <ImgPicker onImageTaken={imageTakenHandler} />
-        <LocationPicker />
+        <LocationPicker navigation={props.navigation} />
         <Button
           title="Save Place"
           onPress={savePlaceHandler}

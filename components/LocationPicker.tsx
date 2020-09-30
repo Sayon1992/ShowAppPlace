@@ -17,7 +17,11 @@ interface LocationPicked {
   long: string;
 }
 
-const LocationPicker: React.FC = () => {
+interface Props {
+  navigation: any;
+}
+
+const LocationPicker: React.FC<Props> = (props) => {
   const [pickedLocation, setPickedLocation] = useState<LocationPicked>();
   const [isFetching, setIsFetching] = useState<boolean>(false);
 
@@ -56,20 +60,36 @@ const LocationPicker: React.FC = () => {
     }
     setIsFetching(false);
   };
+
+  const pickOnMapHandler = (): void => {
+    props.navigation.navigate("Map");
+  };
+
   return (
     <View style={styles.locationPicker}>
-      <MapPreview location={pickedLocation} style={styles.mapPreview}>
+      <MapPreview
+        onPress={pickOnMapHandler}
+        location={pickedLocation}
+        style={styles.mapPreview}
+      >
         {isFetching ? (
           <ActivityIndicator size="large" color={Colors.primary} />
         ) : (
           <Text>No location chosen yet.</Text>
         )}
       </MapPreview>
-      <Button
-        onPress={getLocationHandler}
-        title={"Get User Location"}
-        color={Colors.primary}
-      />
+      <View style={styles.actions}>
+        <Button
+          onPress={getLocationHandler}
+          title={"Get User Location"}
+          color={Colors.primary}
+        />
+        <Button
+          onPress={pickOnMapHandler}
+          title={"Pick on Map"}
+          color={Colors.primary}
+        />
+      </View>
     </View>
   );
 };
@@ -86,5 +106,10 @@ const styles = StyleSheet.create({
     width: "100%",
     borderColor: "#ccc",
     borderWidth: 1,
+  },
+  actions: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    width: "100%",
   },
 });

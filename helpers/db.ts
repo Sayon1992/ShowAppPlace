@@ -64,21 +64,3 @@ export const fetchPlaces = () => {
   });
   return promise;
 };
-
-export const deleteAllPlaces = () => {
-  const promise = new Promise((res: any, rej: any) => {
-    db.transaction((tx) => {
-      tx.executeSql(
-        `DELETE FROM places`,
-        [],
-        (_, result) => {
-          return res(result);
-        },
-        (_, e) => {
-          return rej(e);
-        }
-      );
-    });
-  });
-  return promise;
-};

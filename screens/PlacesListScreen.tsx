@@ -6,7 +6,6 @@ import Place from "../models/place";
 import PlaceItem from "../components/PlaceItem";
 import { ListScreenProps } from "../types/rootStack";
 import * as placesActions from "../store/places-actions";
-import { deleteAllPlaces } from "../helpers/db";
 
 const PlacesListScreen: React.FC<ListScreenProps> = ({ navigation }) => {
   const storePlaces = useSelector<RootState, Place[]>(
