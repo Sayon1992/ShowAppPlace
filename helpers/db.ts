@@ -30,6 +30,12 @@ export const insertPlace = (
 ) => {
   const promise = new Promise((res: any, rej: any) => {
     db.transaction((tx) => {
+      console.log(title);
+      console.log(image);
+      console.log(address);
+      console.log(lat);
+      console.log(long);
+
       tx.executeSql(
         `INSERT INTO places (title, image, address, lat, lng) VALUES (?,?,?,?,?)`,
         [title, image, address, lat, long],

@@ -3,7 +3,6 @@ import * as FileSystem from "expo-file-system";
 import { fetchPlaces, insertPlace } from "../helpers/db";
 import { AddPlaceI, SET_PLACES_SUCCESS } from "./placesActionTypes";
 import { geoApi } from "../API/Api";
-import * as Eff from "redux-saga/effects";
 
 export function* addPlaceWatcher() {
   yield takeLatest("ADD_PLACE", addPlaceFlow);
@@ -25,11 +24,8 @@ function* addPlaceFlow(action: AddPlaceI) {
     if (!response.ok) {
       console.error(response.message);
     }
-    if (!response.results) {
-      throw new Error("something went wrong");
-    }
 
-    const address = response.results[0].formmated_address;
+    const address = response.data.results[0].formatted_address;
 
     const fileName: string = <string>(
       action.placeData.selectedImage.split("/").pop()
