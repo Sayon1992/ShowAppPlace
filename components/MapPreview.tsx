@@ -1,34 +1,36 @@
 import React from "react";
-import { Image, StyleSheet, Text, View } from "react-native";
+import { TouchableOpacity, Image, StyleSheet } from "react-native";
 import Env from "../env";
 
 interface Props {
   location?: {
     lat?: string;
-    long?: string;
+    lng?: string;
   };
-  style: any;
+  style?: any;
   children?: React.ReactNode;
+  onPress?: () => void;
 }
 
 const MapPreview: React.FC<Props> = (props) => {
   let imgPreviewUrl: string = "";
   if (props.location) {
-    imgPreviewUrl = `https://maps.googleapis.com/maps/api/staticmap?center=${props.location.lat}-${props.location.long}&zoom=14&size=600x200&markers=color:red%7Clabel:A%7C${props.location.lat},${props.location.long}&key=${Env.googleApiKey}`;
+    imgPreviewUrl = `https://maps.googleapis.com/maps/api/staticmap?center=${props.location.lat}-${props.location.lng}&zoom=14&size=600x200&markers=color:red%7Clabel:A%7C${props.location.lat},${props.location.lng}&key=${Env.googleApiKey}`;
   }
   return (
-    <View
+    <TouchableOpacity
       style={{
         ...styles.mapPreview,
         ...props.style,
       }}
+      onPress={props.onPress}
     >
       {props.location ? (
         <Image style={styles.mapImage} source={{ uri: imgPreviewUrl }} />
       ) : (
         props.children
       )}
-    </View>
+    </TouchableOpacity>
   );
 };
 

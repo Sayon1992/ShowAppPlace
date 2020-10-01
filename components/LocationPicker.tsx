@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -14,16 +14,29 @@ import MapPreview from "./MapPreview";
 
 interface LocationPicked {
   lat: string;
-  long: string;
+  lng: string;
 }
 
 interface Props {
   navigation: any;
+  route: any;
+  onLocationPicked: (location: { lat: string; lng: string }) => void;
 }
 
 const LocationPicker: React.FC<Props> = (props) => {
   const [pickedLocation, setPickedLocation] = useState<LocationPicked>();
   const [isFetching, setIsFetching] = useState<boolean>(false);
+
+  const mapPickedLocation: any = props.route.params?.pickedLocation;
+
+  const { onLocationPicked } = props;
+
+  useEffect(() => {
+    if (mapPickedLocation) {
+      setPickedLocation(mapPickedLocation);
+      onLocationPicked(mapPickedLocation);
+    }
+  }, [mapPickedLocation, onLocationPicked]);
 
   const verifyPermissions = async (): Promise<boolean> => {
     const result = await Permissions.askAsync(Permissions.LOCATION);
@@ -47,11 +60,14 @@ const LocationPicker: React.FC<Props> = (props) => {
     try {
       setIsFetching(true);
       const location: any = await Location.getCurrentPositionAsync({});
-      console.log(location);
 
       setPickedLocation({
         lat: location.coords.latitude,
-        long: location.coords.longitude,
+        lng: location.coords.longitude,
+      });
+      props.onLocationPicked({
+        lat: location.coords.latitude,
+        lng: location.coords.longitude,
       });
     } catch (e) {
       Alert.alert("Could not fetch location", "Please try again later", [

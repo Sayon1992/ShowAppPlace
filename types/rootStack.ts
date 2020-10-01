@@ -1,8 +1,9 @@
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
+import { MarkerI } from "../screens/MapScreen";
 
 export type RootStackParamList = {
-  Map: undefined;
+  Map: { saveLocation: () => void };
   Places: undefined;
   PlaceDetail:
     | {
@@ -10,7 +11,7 @@ export type RootStackParamList = {
         placeId: string;
       }
     | undefined;
-  NewPlace: undefined;
+  NewPlace: { pickedLocation?: MarkerI | undefined };
 };
 
 type PlacesDetailScreenRouteProp = RouteProp<RootStackParamList, "PlaceDetail">;

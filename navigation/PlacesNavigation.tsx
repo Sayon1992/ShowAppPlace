@@ -1,5 +1,5 @@
 import React from "react";
-import { Platform, TouchableOpacity } from "react-native";
+import { Platform, TouchableOpacity, Text, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 import Colors from "../constants/Colors";
@@ -10,7 +10,11 @@ import MapScreen from "../screens/MapScreen";
 import NewPlaceScreen from "../screens/NewPlaceScreen";
 import PlaceDetailScreen from "../screens/PlaceDetailScreen";
 import PlacesListScreen from "../screens/PlacesListScreen";
-import { RootStackParamList, DetailScreenProps } from "../types/rootStack";
+import {
+  RootStackParamList,
+  DetailScreenProps,
+  MapScreenProps,
+} from "../types/rootStack";
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -45,7 +49,20 @@ const PlacesNavigation: React.FC = () => {
         name="Places"
         component={PlacesListScreen}
       />
-      <Stack.Screen name="Map" component={MapScreen} />
+      <Stack.Screen
+        name="Map"
+        component={MapScreen}
+        options={({ navigation, route }: MapScreenProps) => ({
+          headerRight: () => (
+            <TouchableOpacity
+              style={styles.headerButton}
+              onPress={route.params?.saveLocation}
+            >
+              <Text style={styles.headerButtonText}>Save</Text>
+            </TouchableOpacity>
+          ),
+        })}
+      />
       <Stack.Screen
         name="NewPlace"
         component={NewPlaceScreen}
@@ -63,3 +80,13 @@ const PlacesNavigation: React.FC = () => {
 };
 
 export default PlacesNavigation;
+
+const styles = StyleSheet.create({
+  headerButton: {
+    marginHorizontal: 20,
+  },
+  headerButtonText: {
+    fontSize: 16,
+    color: Platform.OS === "android" ? "white" : Colors.primary,
+  },
+});

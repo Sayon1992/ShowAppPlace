@@ -2,6 +2,8 @@ import { call, takeLatest, put } from "redux-saga/effects";
 import * as FileSystem from "expo-file-system";
 import { fetchPlaces, insertPlace } from "../helpers/db";
 import { AddPlaceI, SET_PLACES_SUCCESS } from "./placesActionTypes";
+import { geoApi } from "../API/Api";
+import * as Eff from "redux-saga/effects";
 
 export function* addPlaceWatcher() {
   yield takeLatest("ADD_PLACE", addPlaceFlow);
@@ -13,6 +15,22 @@ export function* fetchPlaceWatcher() {
 
 function* addPlaceFlow(action: AddPlaceI) {
   try {
+    yield console.log(action);
+
+    const response = yield call(
+      geoApi,
+      action.placeData.location?.lat,
+      action.placeData.location?.lng
+    );
+    if (!response.ok) {
+      console.error(response.message);
+    }
+    if (!response.results) {
+      throw new Error("something went wrong");
+    }
+
+    const address = response.results[0].formmated_address;
+
     const fileName: string = <string>(
       action.placeData.selectedImage.split("/").pop()
     );
@@ -26,9 +44,9 @@ function* addPlaceFlow(action: AddPlaceI) {
       insertPlace,
       action.placeData.title,
       newPath,
-      "address",
-      15.6,
-      12.3
+      address,
+      action.placeData.location?.lat,
+      action.placeData.location?.lng
     );
 
     yield put({
@@ -37,10 +55,15 @@ function* addPlaceFlow(action: AddPlaceI) {
         id: dbResult.insertId.toString(),
         title: action.placeData.title,
         selectedImage: newPath,
+        address: address,
+        coords: {
+          lat: action.placeData.location?.lat,
+          lng: action.placeData.location?.lng,
+        },
       },
     });
   } catch (e) {
-    console.error(e.message);
+    console.error("holi" + e.message);
   }
 }
 

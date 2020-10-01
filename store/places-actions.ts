@@ -4,15 +4,22 @@ import {
   SET_PLACES,
   FetchPlaceI,
 } from "./placesActionTypes";
+import { Location } from "../screens/NewPlaceScreen";
 
 export const addPlace = (
   id: string,
   title: string,
-  selectedImage: string
+  selectedImage: string,
+  location: Location | undefined
 ): AddPlaceI => {
   const returnAction: AddPlaceI = {
     type: ADD_PLACE,
-    placeData: { id: id, title: title, selectedImage: selectedImage },
+    placeData: {
+      id: id,
+      title: title,
+      selectedImage: selectedImage,
+      location: location,
+    },
   };
   return returnAction;
 };

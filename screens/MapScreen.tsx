@@ -1,5 +1,5 @@
 import { getCurrentPositionAsync } from "expo-location";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import MapView, {
   AnimatedRegion,
@@ -7,6 +7,7 @@ import MapView, {
   MapEvent,
   Marker,
 } from "react-native-maps";
+import { MapScreenProps } from "../types/rootStack";
 
 interface MapRegion {
   latitude: number;
@@ -15,21 +16,14 @@ interface MapRegion {
   longitudeDelta: number;
 }
 
-interface MarkerI {
+export interface MarkerI {
   lat?: any;
   lng?: any;
 }
 
-const MapScreen: React.FC = () => {
-  let location: any;
-  const getLocation = async () => {
-    location = await getCurrentPositionAsync;
-  };
-
-  useEffect(() => {
-    getLocation();
-  }, []);
+const MapScreen: React.FC<MapScreenProps> = (props) => {
   const [selectedLocation, setSelectedLocation] = useState<MarkerI>();
+
   const mapRegion: MapRegion = {
     latitude: 37,
     longitude: -122,
@@ -38,16 +32,31 @@ const MapScreen: React.FC = () => {
   };
 
   const selectLocationHandler = (e: MapEvent): void => {
+    const lati = e.nativeEvent.coordinate.latitude;
+    const longi = e.nativeEvent.coordinate.longitude;
+
     setSelectedLocation({
-      lat: e.nativeEvent.coordinate.latitude,
-      lng: e.nativeEvent.coordinate.longitude,
+      lat: lati,
+      lng: longi,
     });
+    // setSelectedLocation((state) => {
+    //   console.log(state);
+    //   return state;
+    // });
   };
 
-  let markerCoordinates = {
-    latitude: 0,
-    longitude: 0,
-  };
+  const savePickedLocationHandler = useCallback((): void => {
+    if (!selectedLocation) {
+      return;
+    }
+    props.navigation.navigate("NewPlace", { pickedLocation: selectedLocation });
+  }, [selectedLocation]);
+
+  useEffect(() => {
+    props.navigation.setParams({ saveLocation: savePickedLocationHandler });
+  }, [savePickedLocationHandler]);
+
+  let markerCoordinates;
 
   if (selectedLocation) {
     markerCoordinates = {
@@ -59,10 +68,17 @@ const MapScreen: React.FC = () => {
   return (
     <MapView
       style={styles.map}
-      onPress={selectLocationHandler}
+      onPress={(e) => {
+        selectLocationHandler(e);
+      }}
       region={mapRegion}
     >
-      <Marker title="Picked Location" coordinate={markerCoordinates}></Marker>
+      <Marker
+        title="Picked Location"
+        coordinate={
+          markerCoordinates ? markerCoordinates : { latitude: 0, longitude: 0 }
+        }
+      ></Marker>
     </MapView>
   );
 };

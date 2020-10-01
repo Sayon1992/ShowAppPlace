@@ -25,8 +25,8 @@ export const insertPlace = (
   title: string,
   image: string,
   address: string,
-  lat: number,
-  long: number
+  lat?: string | undefined,
+  long?: string | undefined
 ) => {
   const promise = new Promise((res: any, rej: any) => {
     db.transaction((tx) => {

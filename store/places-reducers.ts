@@ -24,7 +24,10 @@ export default (
       const newPlace = new Place(
         action.placeData.id,
         action.placeData.title,
-        action.placeData.selectedImage
+        action.placeData.selectedImage,
+        action.placeData.address,
+        action.placeData.coords.lat,
+        action.placeData.coords.lng
       );
       return {
         places: state.places.concat(newPlace),
@@ -33,7 +36,14 @@ export default (
       return {
         places: action.places.map(
           (place: Places) =>
-            new Place(place.id.toString(), place.title, place.image)
+            new Place(
+              place.id.toString(),
+              place.title,
+              place.image,
+              place.address,
+              place.lat,
+              place.lng
+            )
         ),
       };
     default:

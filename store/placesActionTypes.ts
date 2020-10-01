@@ -1,3 +1,5 @@
+import { Location } from "../screens/NewPlaceScreen";
+
 export const ADD_PLACE = "ADD_PLACE";
 export const ADD_PLACE_SUCCESS = "ADD_PLACE_SUCCESS";
 export const ADD_PLACE_FAILED = "ADD_PLACE_FAILED";
@@ -10,6 +12,9 @@ export interface Places {
   id: { toString: () => string };
   title: string;
   image: any;
+  address: string;
+  lat: string;
+  lng: string;
 }
 
 export interface AddPlaceI {
@@ -18,6 +23,7 @@ export interface AddPlaceI {
     id: string;
     title: string;
     selectedImage: string;
+    location: Location | undefined;
   };
 }
 
@@ -27,6 +33,11 @@ export interface AddPlaceSI {
     id: string;
     title: string;
     selectedImage: string;
+    address: string;
+    coords: {
+      lat: string;
+      lng: string;
+    };
   };
 }
 

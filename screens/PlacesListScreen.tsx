@@ -30,7 +30,7 @@ const PlacesListScreen: React.FC<ListScreenProps> = ({ navigation }) => {
               placeId: itemData.item.id,
             });
           }}
-          address={""}
+          address={itemData.item.address}
           title={itemData.item.title}
         />
       )}

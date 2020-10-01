@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
   ScrollView,
   View,
@@ -12,21 +12,40 @@ import Colors from "../constants/Colors";
 import * as placesActions from "../store/places-actions";
 import ImgPicker from "../components/ImgPicker";
 import LocationPicker from "../components/LocationPicker";
+import { NewScreenProps } from "../types/rootStack";
 
-const NewPlaceScreen: React.FC = (props: any) => {
+export interface Location {
+  lat?: string;
+  lng?: string;
+}
+
+const NewPlaceScreen: React.FC<NewScreenProps> = (props) => {
   const [title, setTitle] = useState<string>("");
   const [selectedImage, setselectedImage] = useState<any>();
+  const [selectedLocation, setSelectedLocation] = useState<Location>();
 
   const dispatch = useDispatch();
 
   const savePlaceHandler = () => {
-    dispatch(placesActions.addPlace("", title, selectedImage));
+    console.log(title);
+    console.log(selectedImage);
+    console.log(selectedLocation);
+    dispatch(
+      placesActions.addPlace("", title, selectedImage, selectedLocation)
+    );
     props.navigation.goBack();
   };
 
   const imageTakenHandler = (imagePath: any) => {
     setselectedImage(imagePath);
   };
+
+  const locationPickedHandler = useCallback(
+    (location: { lat: string; lng: string }): void => {
+      setSelectedLocation(location);
+    },
+    []
+  );
 
   return (
     <ScrollView>
@@ -40,7 +59,11 @@ const NewPlaceScreen: React.FC = (props: any) => {
           style={styles.textInput}
         />
         <ImgPicker onImageTaken={imageTakenHandler} />
-        <LocationPicker navigation={props.navigation} />
+        <LocationPicker
+          onLocationPicked={locationPickedHandler}
+          route={props.route}
+          navigation={props.navigation}
+        />
         <Button
           title="Save Place"
           onPress={savePlaceHandler}
