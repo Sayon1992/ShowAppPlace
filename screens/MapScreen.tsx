@@ -22,16 +22,24 @@ export interface MarkerI {
 }
 
 const MapScreen: React.FC<MapScreenProps> = (props) => {
-  const [selectedLocation, setSelectedLocation] = useState<MarkerI>();
+  const initialLocation = props.route.params?.initialLocation;
+  const readOnly = props.route.params?.readOnly;
+
+  const [selectedLocation, setSelectedLocation] = useState<MarkerI | undefined>(
+    initialLocation
+  );
 
   const mapRegion: MapRegion = {
-    latitude: 37,
-    longitude: -122,
+    latitude: initialLocation ? initialLocation.lat : 37,
+    longitude: initialLocation ? initialLocation.lng : -122,
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421,
   };
 
   const selectLocationHandler = (e: MapEvent): void => {
+    if (readOnly) {
+      return;
+    }
     const lati = e.nativeEvent.coordinate.latitude;
     const longi = e.nativeEvent.coordinate.longitude;
 

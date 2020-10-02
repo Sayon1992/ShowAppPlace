@@ -16,6 +16,15 @@ const PlaceDetailScreen: React.FC<DetailScreenProps> = (props) => {
     )
   );
 
+  const selectedLocation = { lat: selectedPlace?.lat, lng: selectedPlace?.lng };
+
+  const showMapHandler = (): void => {
+    props.navigation.navigate("Map", {
+      readOnly: true,
+      initialLocation: selectedLocation,
+    });
+  };
+
   return (
     <ScrollView contentContainerStyle={{ alignItems: "center" }}>
       <Image source={{ uri: selectedPlace?.image }} style={styles.image} />
@@ -24,8 +33,9 @@ const PlaceDetailScreen: React.FC<DetailScreenProps> = (props) => {
           <Text style={styles.address}>Place Detail screen</Text>
         </View>
         <MapPreview
-          location={{ lat: selectedPlace?.lat, lng: selectedPlace?.lng }}
+          location={selectedLocation}
           style={styles.mapPreview}
+          onPress={showMapHandler}
         />
       </View>
     </ScrollView>

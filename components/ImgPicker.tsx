@@ -12,8 +12,10 @@ const ImgPicker: React.FC<Props> = (props) => {
   const [pickedImage, setPickedImage] = useState<string>();
 
   const verifyPermissions = async (): Promise<boolean> => {
-    await Permissions.askAsync(Permissions.CAMERA);
-    const resultRoll = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+    const resultRoll = await Permissions.askAsync(
+      Permissions.CAMERA_ROLL,
+      Permissions.CAMERA
+    );
     if (resultRoll.status !== "granted") {
       Alert.alert(
         "Insufficient permissions!",

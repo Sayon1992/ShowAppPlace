@@ -1,9 +1,16 @@
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
 import { MarkerI } from "../screens/MapScreen";
+import { Marker } from "react-native-maps";
 
 export type RootStackParamList = {
-  Map: { saveLocation: () => void };
+  Map:
+    | {
+        saveLocation?: () => void;
+        readOnly?: boolean;
+        initialLocation?: MarkerI | undefined;
+      }
+    | undefined;
   Places: undefined;
   PlaceDetail:
     | {

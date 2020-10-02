@@ -53,14 +53,21 @@ const PlacesNavigation: React.FC = () => {
         name="Map"
         component={MapScreen}
         options={({ navigation, route }: MapScreenProps) => ({
-          headerRight: () => (
-            <TouchableOpacity
-              style={styles.headerButton}
-              onPress={route.params?.saveLocation}
-            >
-              <Text style={styles.headerButtonText}>Save</Text>
-            </TouchableOpacity>
-          ),
+          headerRight: () => {
+            const readOnly = route.params?.readOnly;
+            if (readOnly) {
+              return <></>;
+            } else {
+              return (
+                <TouchableOpacity
+                  style={styles.headerButton}
+                  onPress={route.params?.saveLocation}
+                >
+                  <Text style={styles.headerButtonText}>Save</Text>
+                </TouchableOpacity>
+              );
+            }
+          },
         })}
       />
       <Stack.Screen

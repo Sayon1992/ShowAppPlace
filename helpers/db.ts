@@ -34,8 +34,6 @@ export const insertPlace = (
         `INSERT INTO places (title, image, address, lat, lng) VALUES (?,?,?,?,?)`,
         [title, image, address, lat, long],
         (_, result) => {
-          console.log("entro");
-
           return res(result);
         },
         (_, e) => {
